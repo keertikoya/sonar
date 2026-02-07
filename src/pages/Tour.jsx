@@ -24,6 +24,22 @@ function addDays(date, n) {
   return d;
 }
 
+function cityCode(city = "") {
+  const clean = city.replace(/[^a-zA-Z]/g, "").toUpperCase();
+  if (clean.length >= 3) return clean.slice(0, 3);
+  return (clean + "XXX").slice(0, 3);
+}
+
+// Deterministic hue based on state code (TX, CA, etc.)
+function stateHue(state = "") {
+  const s = String(state || "").toUpperCase();
+  let hash = 0;
+  for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
+  // keep in a nice neon-friendly hue range
+  return (hash % 280) + 40; // 40..319
+}
+
+
 function CalendarView({ performances }) {
   const today = new Date();
   const [month, setMonth] = useState(() => startOfMonth(today));
@@ -64,7 +80,8 @@ function CalendarView({ performances }) {
   const nextMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1));
 
   return (
-    <div className="tourCalWrap">
+  <div className="tourCalWrap">
+    <div className="tourCalLeft">
       <div className="tourCalHeader">
         <button className="btn ghost" onClick={prevMonth}>←</button>
         <div className="tourCalTitle">
@@ -80,30 +97,45 @@ function CalendarView({ performances }) {
       </div>
 
       <div className="tourCalGrid">
-        {days.map(({ d, key, inMonth, isToday, isSelected, count }) => (
-          <button
-            key={key}
-            className={[
-              "tourCalCell",
-              inMonth ? "" : "muted",
-              isToday ? "today" : "",
-              isSelected ? "selected" : ""
-            ].join(" ")}
-            onClick={() => setSelectedDay(key)}
-          >
-            <div className="tourCalDayNum">{d.getDate()}</div>
-            {count > 0 && (
-              <div className="tourCalDots">
-                {Array.from({ length: Math.min(3, count) }).map((_, i) => (
-                  <span key={i} className="tourCalDot" />
-                ))}
-                {count > 3 && <span className="tourCalMore">+{count - 3}</span>}
-              </div>
-            )}
-          </button>
-        ))}
-      </div>
+        {days.map(({ d, key, inMonth, isToday, isSelected }) => {
+          const dayEvents = eventsByDay.get(key) || [];
+          const count = dayEvents.length;
 
+          return (
+            <button
+              key={key}
+              className={[
+                "tourCalCell",
+                inMonth ? "" : "muted",
+                isToday ? "today" : "",
+                isSelected ? "selected" : ""
+              ].join(" ")}
+              onClick={() => setSelectedDay(key)}
+            >
+              <div className="tourCalDayNum">{d.getDate()}</div>
+
+              {count > 0 && (
+                <div className="tourCalBadges">
+                  {dayEvents.slice(0, 2).map((ev) => (
+                    <span
+                      key={ev.id}
+                      className="tourCalBadge"
+                      style={{ "--h": stateHue(ev.state) }}
+                      title={`${ev.city}, ${ev.state} • ${ev.venue}`}
+                    >
+                      {cityCode(ev.city)}
+                    </span>
+                  ))}
+                  {count > 2 && <span className="tourCalMore">+{count - 2}</span>}
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+
+    <div className="tourCalRight">
       <div className="tourCalDayPanel">
         <div className="h3" style={{ marginBottom: 8 }}>
           {selectedDay} • {selectedEvents.length} show{selectedEvents.length === 1 ? "" : "s"}
@@ -115,7 +147,12 @@ function CalendarView({ performances }) {
           <div className="list">
             {selectedEvents.map((item) => (
               <Link key={item.id} to={`/performance/${item.id}`} className="card" style={{ padding: 12, display: "block" }}>
-                <div style={{ fontWeight: 700 }}>{item.city}, {item.state}</div>
+                <div style={{ fontWeight: 800, display: "flex", gap: 10, alignItems: "center" }}>
+                  <span className="tourCityPill" style={{ "--h": stateHue(item.state) }}>
+                    {cityCode(item.city)}
+                  </span>
+                  {item.city}, {item.state}
+                </div>
                 <div className="body">{item.venue}</div>
               </Link>
             ))}
@@ -123,7 +160,9 @@ function CalendarView({ performances }) {
         )}
       </div>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default function Tour() {
