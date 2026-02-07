@@ -1,0 +1,75 @@
+[
+  {
+    "id": "mohawk",
+    "name": "Mohawk",
+    "city": "Austin",
+    "capacity": 900,
+    "genreFit": "indie / alt",
+    "typicalDays": [
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
+    "contact": "booking@mohawkaustin.com"
+  },
+  {
+    "id": "scoot",
+    "name": "Scoot Inn",
+    "city": "Austin",
+    "capacity": 1500,
+    "genreFit": "indie / rock",
+    "typicalDays": [
+      "Fri",
+      "Sat"
+    ],
+    "contact": "https://www.theeastsidescootinn.com/contact"
+  },
+  {
+    "id": "holesky",
+    "name": "Hole in the Sky",
+    "city": "Austin",
+    "capacity": 250,
+    "genreFit": "folk / indie",
+    "typicalDays": [
+      "Wed",
+      "Thu"
+    ],
+    "contact": "instagram.com/holeinsky"
+  },
+  {
+    "id": "papermoon",
+    "name": "Paper Tiger",
+    "city": "San Antonio",
+    "capacity": 1000,
+    "genreFit": "indie / alt",
+    "typicalDays": [
+      "Thu",
+      "Fri"
+    ],
+    "contact": "booking@papertiger.com"
+  },
+  {
+    "id": "granada",
+    "name": "Granada Theater",
+    "city": "Dallas",
+    "capacity": 1000,
+    "genreFit": "alt / pop",
+    "typicalDays": [
+      "Fri",
+      "Sat"
+    ],
+    "contact": "https://granadatheater.com/contact"
+  },
+  {
+    "id": "whiteoak",
+    "name": "White Oak Music Hall",
+    "city": "Houston",
+    "capacity": 2800,
+    "genreFit": "indie / alt",
+    "typicalDays": [
+      "Thu",
+      "Fri"
+    ],
+    "contact": "https://www.whiteoakmusichall.com/contact"
+  }
+]

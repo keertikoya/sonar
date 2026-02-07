@@ -1,0 +1,79 @@
+[
+  {
+    "id": "aus",
+    "city": "Austin",
+    "state": "TX",
+    "lat": 30.2672,
+    "lng": -97.7431,
+    "search": 0.82,
+    "trend": 0.74,
+    "saturation": 0.45,
+    "genreAlignment": 0.82
+  },
+  {
+    "id": "sat",
+    "city": "San Antonio",
+    "state": "TX",
+    "lat": 29.4241,
+    "lng": -98.4936,
+    "search": 0.61,
+    "trend": 0.58,
+    "saturation": 0.36,
+    "genreAlignment": 0.7
+  },
+  {
+    "id": "dal",
+    "city": "Dallas",
+    "state": "TX",
+    "lat": 32.7767,
+    "lng": -96.797,
+    "search": 0.68,
+    "trend": 0.64,
+    "saturation": 0.62,
+    "genreAlignment": 0.66
+  },
+  {
+    "id": "hou",
+    "city": "Houston",
+    "state": "TX",
+    "lat": 29.7604,
+    "lng": -95.3698,
+    "search": 0.71,
+    "trend": 0.69,
+    "saturation": 0.55,
+    "genreAlignment": 0.62
+  },
+  {
+    "id": "okc",
+    "city": "Oklahoma City",
+    "state": "OK",
+    "lat": 35.4676,
+    "lng": -97.5164,
+    "search": 0.55,
+    "trend": 0.49,
+    "saturation": 0.28,
+    "genreAlignment": 0.59
+  },
+  {
+    "id": "tul",
+    "city": "Tulsa",
+    "state": "OK",
+    "lat": 36.154,
+    "lng": -95.9928,
+    "search": 0.5,
+    "trend": 0.46,
+    "saturation": 0.22,
+    "genreAlignment": 0.57
+  },
+  {
+    "id": "abq",
+    "city": "Albuquerque",
+    "state": "NM",
+    "lat": 35.0844,
+    "lng": -106.6504,
+    "search": 0.48,
+    "trend": 0.44,
+    "saturation": 0.25,
+    "genreAlignment": 0.6
+  }
+]
