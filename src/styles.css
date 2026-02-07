@@ -147,3 +147,130 @@ a{color:inherit;text-decoration:none}
 @media (max-width: 560px){
   .venuesFilters{grid-template-columns:1fr;}
 }
+
+/* Segmented toggle */
+.seg{
+  display:flex;
+  border: 1px solid rgba(120,140,170,0.22);
+  background: rgba(8,14,26,0.35);
+  border-radius: 14px;
+  padding: 4px;
+  gap: 4px;
+}
+.segBtn{
+  border: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(230,242,255,0.78);
+  font-weight: 800;
+  cursor: pointer;
+}
+.segBtn.active{
+  background: rgba(80,200,255,0.15);
+  color: rgba(235,250,255,0.95);
+  box-shadow: 0 0 0 1px rgba(80,200,255,0.25), 0 0 22px rgba(80,200,255,0.12);
+}
+
+/* Calendar layout */
+.tourCalWrap{
+  display:grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 14px;
+  align-items:start;
+}
+@media (max-width: 900px){
+  .tourCalWrap{ grid-template-columns: 1fr; }
+}
+
+.tourCalHeader{
+  grid-column: 1 / -1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
+.tourCalTitle{
+  font-weight: 900;
+  letter-spacing: .2px;
+  font-size: 18px;
+}
+
+.tourCalDow{
+  display:grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+.tourCalDowCell{
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(200,220,255,0.65);
+  text-align:center;
+  padding: 8px 0;
+}
+
+.tourCalGrid{
+  display:grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+.tourCalCell{
+  height: 74px;
+  border-radius: 16px;
+  border: 1px solid rgba(120,140,170,0.18);
+  background: rgba(8,14,26,0.32);
+  cursor:pointer;
+  padding: 10px;
+  text-align:left;
+  position: relative;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.tourCalCell:hover{
+  transform: translateY(-1px);
+  border-color: rgba(80,200,255,0.35);
+  box-shadow: 0 0 0 1px rgba(80,200,255,0.18), 0 0 22px rgba(80,200,255,0.10);
+}
+.tourCalCell.muted{
+  opacity: .45;
+}
+.tourCalCell.today{
+  border-color: rgba(180,120,255,0.35);
+  box-shadow: 0 0 0 1px rgba(180,120,255,0.16), 0 0 22px rgba(180,120,255,0.10);
+}
+.tourCalCell.selected{
+  border-color: rgba(80,200,255,0.55);
+  box-shadow: 0 0 0 1px rgba(80,200,255,0.25), 0 0 28px rgba(80,200,255,0.14);
+}
+
+.tourCalDayNum{
+  font-weight: 900;
+  color: rgba(240,250,255,0.92);
+}
+
+.tourCalDots{
+  position:absolute;
+  left: 10px;
+  bottom: 10px;
+  display:flex;
+  align-items:center;
+  gap: 6px;
+}
+.tourCalDot{
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(80,200,255,0.9);
+  box-shadow: 0 0 14px rgba(80,200,255,0.35);
+}
+.tourCalMore{
+  font-size: 11px;
+  font-weight: 900;
+  color: rgba(230,242,255,0.78);
+}
+
+.tourCalDayPanel{
+  border: 1px solid rgba(120,140,170,0.18);
+  background: rgba(8,14,26,0.32);
+  border-radius: 18px;
+  padding: 14px;
+}
