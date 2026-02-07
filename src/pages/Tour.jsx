@@ -97,42 +97,39 @@ function CalendarView({ performances }) {
       </div>
 
       <div className="tourCalGrid">
-        {days.map(({ d, key, inMonth, isToday, isSelected }) => {
-          const dayEvents = eventsByDay.get(key) || [];
-          const count = dayEvents.length;
+  {days.map(({ d, key, inMonth }) => {
+    const dayEvents = eventsByDay.get(key) || [];
 
-          return (
-            <button
-              key={key}
-              className={[
-                "tourCalCell",
-                inMonth ? "" : "muted",
-                isToday ? "today" : "",
-                isSelected ? "selected" : ""
-              ].join(" ")}
-              onClick={() => setSelectedDay(key)}
+    return (
+      <div key={key} className={`tourCalCell ${inMonth ? "" : "muted"}`}>
+        <div className="tourCalCellHeader">
+          <span className="tourCalDayNum">{d.getDate()}</span>
+        </div>
+
+        <div className="tourCalEvents">
+          {dayEvents.slice(0, 2).map(ev => (
+            <div
+              key={ev.id}
+              className="tourCalEvent"
+              style={{ "--h": stateHue(ev.state) }}
+              title={`${ev.city}, ${ev.state} • ${ev.venue}`}
             >
-              <div className="tourCalDayNum">{d.getDate()}</div>
+              <span className="tourCalEventCity">{cityCode(ev.city)}</span>
+              <span className="tourCalEventName">{ev.city}</span>
+            </div>
+          ))}
 
-              {count > 0 && (
-                <div className="tourCalBadges">
-                  {dayEvents.slice(0, 2).map((ev) => (
-                    <span
-                      key={ev.id}
-                      className="tourCalBadge"
-                      style={{ "--h": stateHue(ev.state) }}
-                      title={`${ev.city}, ${ev.state} • ${ev.venue}`}
-                    >
-                      {cityCode(ev.city)}
-                    </span>
-                  ))}
-                  {count > 2 && <span className="tourCalMore">+{count - 2}</span>}
-                </div>
-              )}
-            </button>
-          );
-        })}
+          {dayEvents.length > 2 && (
+            <div className="tourCalMoreLine">
+              +{dayEvents.length - 2} more
+            </div>
+          )}
+        </div>
       </div>
+    );
+  })}
+</div>
+
     </div>
 
     <div className="tourCalRight">
