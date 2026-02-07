@@ -28,7 +28,12 @@ export default function PerformanceDetail(){
       <div className="h1" style={{ marginBottom: 8 }}>{perf.city} — {perf.venue}</div>
 
       <div className="body">Date (YYYY-MM-DD)</div>
-      <input value={date} onChange={e=>setDate(e.target.value)} placeholder="2026-03-14" className="input" />
+      <input
+        type="date"
+        value={date}
+        onChange={e=>setDate(e.target.value)}
+        className="input"
+      />
 
       <div className="h3" style={{ marginTop: 8 }}>Setlist</div>
       <div className="list">
