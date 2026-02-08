@@ -180,9 +180,13 @@ export default function Tour() {
   const { state } = useApp();
   const [view, setView] = useState("timeline"); // "timeline" | "calendar"
 
+  const activeTourId = state.tour.activeTourId;
+
   const performances = useMemo(() => {
-    return [...state.tour.performances].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-  }, [state.tour.performances]);
+    return [...state.tour.performances]
+      .filter(p => p.tourId === activeTourId)
+      .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  }, [state.tour.performances, activeTourId]);
 
   return (
     <div className="container" style={{ paddingTop: 16 }}>
