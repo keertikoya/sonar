@@ -4,7 +4,7 @@
     "name": "Mohawk",
     "city": "Austin",
     "capacity": 900,
-    "genreFit": "indie / alt",
+    "genreFit": "Indie / Alt",
     "typicalDays": [
       "Thu",
       "Fri",
@@ -17,7 +17,7 @@
     "name": "Scoot Inn",
     "city": "Austin",
     "capacity": 1500,
-    "genreFit": "indie / rock",
+    "genreFit": "Indie / Rock",
     "typicalDays": [
       "Fri",
       "Sat"
@@ -29,7 +29,7 @@
     "name": "Hole in the Sky",
     "city": "Austin",
     "capacity": 250,
-    "genreFit": "folk / indie",
+    "genreFit": "Folk / Indie",
     "typicalDays": [
       "Wed",
       "Thu"
@@ -41,7 +41,7 @@
     "name": "Paper Tiger",
     "city": "San Antonio",
     "capacity": 1000,
-    "genreFit": "indie / alt",
+    "genreFit": "Indie / Alt",
     "typicalDays": [
       "Thu",
       "Fri"
@@ -53,7 +53,7 @@
     "name": "Granada Theater",
     "city": "Dallas",
     "capacity": 1000,
-    "genreFit": "alt / pop",
+    "genreFit": "Alt / Pop",
     "typicalDays": [
       "Fri",
       "Sat"
@@ -65,7 +65,7 @@
     "name": "White Oak Music Hall",
     "city": "Houston",
     "capacity": 2800,
-    "genreFit": "indie / alt",
+    "genreFit": "Indie / Alt",
     "typicalDays": [
       "Thu",
       "Fri"

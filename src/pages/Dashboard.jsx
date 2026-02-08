@@ -10,7 +10,7 @@ export default function Dashboard(){
   // Pull from our new state structure
   const { cities, isLoading } = state.analysis;
 
-  const goCity = (c) => navigate(`/city/${c.id}`);
+  const goCity = (c) => navigate(`/venues/${c.id}`);
 
   // 1. Loading State: Shows while the Vite Proxy/SerpAPI is working
   if (isLoading) {

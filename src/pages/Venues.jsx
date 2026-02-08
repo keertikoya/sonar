@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { searchVenues } from '../services/venuesService';
 
-// --- UI Components ---
+// UI Components
 function IconButton({ title, onClick, children, variant = 'ghost', disabled = false }) {
   const cls = variant === 'primary' ? 'iconBtn iconBtn--primary' : 'iconBtn';
   return (
@@ -13,7 +13,7 @@ function IconButton({ title, onClick, children, variant = 'ghost', disabled = fa
   );
 }
 
-// --- Main Page Component ---
+// Main Page Component
 export default function Venues() {
   const { state, dispatch } = useApp();
   const { cityId } = useParams();
@@ -29,18 +29,31 @@ export default function Venues() {
     [state.analysis.cities, cityId]
   );
 
-  // 1. Fetch live data from SerpApi
-  useEffect(() => {
-    if (city?.city) {
-      setLoading(true);
-      searchVenues(city.city).then(results => {
-        setVenues(results);
-        setLoading(false);
-      });
-    }
-  }, [city?.city]);
+  // Fetch live data from SerpApi
+useEffect(() => {
+  const loadData = async () => {
+    const hasCoords = city && 
+                     city.lat !== undefined && city.lat !== null &&
+                     city.lng !== undefined && city.lng !== null;
 
-  // 2. Navigation Handler
+    if (hasCoords) {
+      setLoading(true);
+      try {
+        const results = await searchVenues(city.city, city.state, city.lat, city.lng);
+        setVenues(results);
+      } catch (err) {
+        console.error("Venues Page Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      console.log("Venues.jsx: Waiting for valid city coordinates...");
+    }
+  };
+
+  loadData();
+}, [city]); 
+  // Navigation Handler
   const addToTour = (venue) => {
     if (!city) return;
     const performanceId = `perf-${Date.now()}`;
@@ -53,13 +66,14 @@ export default function Venues() {
         venue: venue.name, 
         address: venue.address,
         date: null, 
-        setlist: [] 
+        setlist: [],
+        tourId: state.tour.activeTourId,
       } 
     });
-    navigate('/tour');
+    navigate(`/performance/${performanceId}`);
   };
 
-  // 3. Search Filtering
+  // Search Filtering
   const filteredVenues = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return venues;

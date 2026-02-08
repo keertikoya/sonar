@@ -34,7 +34,11 @@ function stateHue(state = "") {
   const s = String(state || "").toUpperCase();
   let hash = 0;
   for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
+<<<<<<< HEAD
   return (hash % 280) + 40; 
+=======
+  return (hash % 280) + 40; // 40..319
+>>>>>>> 6454a2f40b7053b2eec6c12c1c59eedba47d9a43
 }
 
 
@@ -118,7 +122,11 @@ const primary =
     onClick={(e) => {
       e.stopPropagation();
       setSelectedDay(key);
+<<<<<<< HEAD
       setSelectedEventId(ev.id);
+=======
+      setSelectedEventId(ev.id); 
+>>>>>>> 6454a2f40b7053b2eec6c12c1c59eedba47d9a43
     }}
     title={`${ev.city}, ${ev.state} • ${ev.venue}`}
   >

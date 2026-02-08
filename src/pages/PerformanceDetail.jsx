@@ -23,12 +23,13 @@ const tours = state.tour.tours || [];
   if(!perf) return <div className="container">Not found</div>
 
   const save = () => {
-dispatch({
-  type: 'UPDATE_PERFORMANCE',
-  payload: { id, date, tourId, title, time, summary, details },
-});
-    navigate(-1);
+    dispatch({
+    type: 'UPDATE_PERFORMANCE',
+    payload: { id, date, tourId, title, time, summary, details },
+    });
+    navigate('/tour');
   }
+<<<<<<< HEAD
 
   function createTourInline() {
   const name = window.prompt("New tour name?");
@@ -55,6 +56,9 @@ dispatch({
 
 
 
+=======
+  
+>>>>>>> 6454a2f40b7053b2eec6c12c1c59eedba47d9a43
   const addSong = () => {
     if(!song) return;
     dispatch({ type: 'UPDATE_PERFORMANCE', payload: { id, setlist: [...(perf.setlist||[]), song] } });
@@ -108,16 +112,6 @@ dispatch({
 <div className="body" style={{ marginTop: 8 }}>Details</div>
 <textarea value={details} onChange={e=>setDetails(e.target.value)} rows={5} className="input"
   placeholder="Load-in, soundcheck, contacts, support acts, notes..." />
-
-
-
-      <div className="body">Date (YYYY-MM-DD)</div>
-      <input
-        type="date"
-        value={date}
-        onChange={e=>setDate(e.target.value)}
-        className="input"
-      />
 
       <div className="h3" style={{ marginTop: 8 }}>Setlist</div>
       <div className="list">

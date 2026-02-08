@@ -26,7 +26,7 @@ export default function Auth(){
           ))}
         </div>
         <div className="vinyl-center-label">
-          <div className="label-text">Artist Venue</div>
+          <div className="label-text">Sonar</div>
           <div className="label-subtext">Data-Driven Touring</div>
         </div>
       </div>
