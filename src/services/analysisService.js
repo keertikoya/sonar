@@ -10,20 +10,18 @@ async function resolveTopicId(query) {
     api_key: API_KEY
   });
 
+  // Use the proxy path /serpapi/
   const res = await fetch(`/serpapi/search.json?${params}`);
   const data = await res.json();
 
-  // Prefer TOPIC results
   const topic = data.suggestions?.find(s => s.type === "TOPIC");
-
   return topic?.mid || null;
 }
 
 export async function runAnalysis({ name, genre }) {
-
   const topicId = await resolveTopicId(name);
-  const q = topicId ?? name; // fallback to text if no topic
-  console.log(topicId);
+  const q = topicId ?? name; 
+  console.log("Using Query/TopicID:", q);
 
   try {
     const params = new URLSearchParams({
@@ -32,29 +30,30 @@ export async function runAnalysis({ name, genre }) {
       geo: "US",
       hl: "en",
       data_type: "GEO_MAP_0",
-      date: "today 12-m",
-      //region: "CITY",
+      // If today 12-m gives only 4 results, try removing it or using "all"
+      date: "today 12-m", 
+      region: "CITY",
       include_low_search_volume: "true",
       api_key: API_KEY
     });
 
-    // We omit 'date' and 'tz' to match your working URL exactly
-    const finalUrl = `/serpapi/search.json?${params.toString()}`;
-    console.log(finalUrl);
+    // CRITICAL: Use the local proxy path to avoid CORS
+    const proxyUrl = `/serpapi/search.json?${params.toString()}`;
+    console.log("Fetching via Proxy:", proxyUrl);
     
-    const response = await fetch(finalUrl);
+    const response = await fetch(proxyUrl);
     if (!response.ok) throw new Error(`SerpApi failed: ${response.status}`);
 
     const data = await response.json();
-    //const rawCities = data.interest_by_region || [];
-    const rawCities = data.interest_by_region?.cities || [];
+    
+    // FIX: SerpApi returns the array directly under interest_by_region
+    const rawCities = data.interest_by_region || [];
+    console.log(`Received ${rawCities.length} cities from API`);
 
     const results = rawCities.map((item, index) => {
-    const cityName = item.location || "Unknown City";
+      const cityName = item.location || "Unknown City";
 
-
-      // Look up in your cities.json for state/coords
-      // Using .includes ensures "New York, NY" matches "New York"
+      // Precise matching logic
       const match = cityData.find(c => 
         cityName.toLowerCase().includes(c.city.toLowerCase())
       );
@@ -66,11 +65,13 @@ export async function runAnalysis({ name, genre }) {
         score: parseInt(item.extracted_value) || 0,
         lat: match ? match.latitude : null,
         lng: match ? match.longitude : null,
+        // Keep these for your heatmap UI
         trend: parseFloat((Math.random() * 10).toFixed(1)),
         saturation: parseFloat((Math.random() * 5).toFixed(1))
       };
     });
 
+    // Filter out results where score is 0 if desired
     return { 
       cities: results.sort((a, b) => b.score - a.score),
       lastRunAt: new Date().toISOString() 

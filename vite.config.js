@@ -1,17 +1,17 @@
-import { defineConfig } from 'vite'; // <--- THIS WAS MISSING
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // This creates the "tunnel" to SerpAPI to bypass CORS
+      // When your app calls '/serpapi/search.json', 
+      // Vite redirects it to 'https://serpapi.com/search.json'
       '/serpapi': {
         target: 'https://serpapi.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/serpapi/, ''),
-      },
-    },
-  },
-});
+        rewrite: (path) => path.replace(/^\/serpapi/, '')
+      }
+    }
+  }
+})
