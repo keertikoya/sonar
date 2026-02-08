@@ -49,7 +49,11 @@ export default function HeatmapMap({ data = [], onSelectCity }){
               <Circle 
                 center={[coords.lat, coords.lng]} 
                 radius={Math.max(20000, (item.score || 0) * 1500)} 
-                pathOptions={{ color: 'orange', fillOpacity: 0.4 }} 
+                pathOptions={{
+                  color: '#58765d',
+                  fillColor: '#58765d',
+                  fillOpacity: 0.35
+                }}                
               />
               <Marker position={[coords.lat, coords.lng]} eventHandlers={{ click: () => onSelectCity?.(item) }}>
                 <Popup>
