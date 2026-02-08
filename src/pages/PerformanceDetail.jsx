@@ -29,36 +29,7 @@ const tours = state.tour.tours || [];
     });
     navigate('/tour');
   }
-<<<<<<< HEAD
-
-  function createTourInline() {
-  const name = window.prompt("New tour name?");
-  if (!name) return;
-
-  const id =
-    (typeof crypto !== "undefined" && crypto.randomUUID)
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-
-  // If tours array doesn't exist for some reason, don't proceed silently
-  const existingTours = state?.tour?.tours;
-  if (!Array.isArray(existingTours)) {
-    alert("Tours are not initialized yet. Check initialState in AppContext.");
-    return;
-  }
-
-  dispatch({ type: "ADD_TOUR", payload: { id, name } });
-  dispatch({ type: "SET_ACTIVE_TOUR", payload: id });
-
-  // set local selection too
-  setTourId(id);
-}
-
-
-
-=======
   
->>>>>>> 6454a2f40b7053b2eec6c12c1c59eedba47d9a43
   const addSong = () => {
     if(!song) return;
     dispatch({ type: 'UPDATE_PERFORMANCE', payload: { id, setlist: [...(perf.setlist||[]), song] } });
