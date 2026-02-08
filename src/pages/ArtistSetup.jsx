@@ -67,7 +67,7 @@ export default function ArtistSetup(){
             <label className="field-label">Genre</label>
             <input 
               className="field-input" 
-              placeholder="indie rock" 
+              placeholder="Country" 
               value={genre} 
               onChange={e=>setGenre(e.target.value)} 
             />
@@ -77,7 +77,7 @@ export default function ArtistSetup(){
             <label className="field-label">Similar Artists <span className="label-optional">(optional)</span></label>
             <input 
               className="field-input" 
-              placeholder="Spoon, Snail Mail, Local Natives" 
+              placeholder="Taylor Swift, Bruno Mars, Beyonce" 
               value={similar} 
               onChange={e=>setSimilar(e.target.value)} 
             />
