@@ -1,23 +1,34 @@
-
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { runAnalysis } from '../services/analysisService'
 
 export default function ArtistSetup(){
-  const { state, dispatch } = useApp();
+  // Note: We now pull 'executeAnalysis' directly from context
+  const { state, dispatch, executeAnalysis } = useApp();
   const [name, setName] = useState(state.artist.name);
   const [genre, setGenre] = useState(state.artist.genre);
   const [similar, setSimilar] = useState(state.artist.similar.join(', '));
-  const [loading, setLoading] = useState(false);
+  
+  // We can use the global loading state or keep a local one for the button
+  const [localLoading, setLocalLoading] = useState(false);
   const navigate = useNavigate();
 
   const onRun = async () => {
-    setLoading(true);
-    dispatch({ type: 'SET_ARTIST', payload: { name, genre, similar: similar.split(',').map(s => s.trim()).filter(Boolean) } });
-    const analysis = await runAnalysis({ name, genre, similarArtists: similar });
-    dispatch({ type: 'SET_ANALYSIS', payload: analysis });
-    setLoading(false);
+    setLocalLoading(true);
+    
+    // 1. Update the artist info in state
+    const artistPayload = { 
+      name, 
+      genre, 
+      similar: similar.split(',').map(s => s.trim()).filter(Boolean) 
+    };
+    dispatch({ type: 'SET_ARTIST', payload: artistPayload });
+
+    // 2. Trigger the global executeAnalysis function
+    // This handles the runAnalysis call and the dispatching for you
+    await executeAnalysis({ name, genre, similarArtists: similar });
+
+    setLocalLoading(false);
     navigate('/dashboard');
   };
 
@@ -36,8 +47,8 @@ export default function ArtistSetup(){
         <label className="body">Similar Artists (comma-separated, optional)</label>
         <input className="input" placeholder="e.g., Spoon, Snail Mail" value={similar} onChange={e=>setSimilar(e.target.value)} />
 
-        <button className="btn" disabled={loading || !name || !genre} onClick={onRun}>
-          {loading ? 'Analyzing…' : 'Run Analysis'}
+        <button className="btn" disabled={localLoading || !name || !genre} onClick={onRun}>
+          {localLoading ? 'Analyzing…' : 'Run Analysis'}
         </button>
       </div>
     </div>

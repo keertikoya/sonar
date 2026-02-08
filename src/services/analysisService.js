@@ -1,11 +1,83 @@
+import cityData from '../data/cities.json';
 
-import sample from '../data/sampleCities.json';
-export async function runAnalysis({ name, genre, similarArtists }){
-  const ranked = [...sample].map(c => ({
-    ...c,
-    score: c.search * 0.6 + c.trend * 0.3 + (1 - c.saturation) * 0.1,
-    tier: (c.search > 0.6 && c.saturation < 0.4) ? 'High/Low' : (c.search > 0.6 ? 'High/High' : 'Low'),
-    genreAlignment: Math.min(1, Math.max(0, c.genreAlignment ?? 0.6))
-  })).sort((a,b)=> b.score - a.score);
-  return { cities: ranked, lastRunAt: new Date().toISOString() };
+const API_KEY = "41b62188dbc8c43a62c470b5400bcba4a5dab6d411918164bfccfa6d09caa743";
+
+async function resolveTopicId(query) {
+  const params = new URLSearchParams({
+    engine: "google_trends_autocomplete",
+    q: query,
+    hl: "en",
+    api_key: API_KEY
+  });
+
+  const res = await fetch(`/serpapi/search.json?${params}`);
+  const data = await res.json();
+
+  // Prefer TOPIC results
+  const topic = data.suggestions?.find(s => s.type === "TOPIC");
+
+  return topic?.mid || null;
+}
+
+export async function runAnalysis({ name, genre }) {
+
+  const topicId = await resolveTopicId(name);
+  const q = topicId ?? name; // fallback to text if no topic
+  console.log(topicId);
+
+  try {
+    const params = new URLSearchParams({
+      engine: "google_trends",
+      q: q,
+      geo: "US",
+      hl: "en",
+      data_type: "GEO_MAP_0",
+      date: "today 12-m",
+      //region: "CITY",
+      include_low_search_volume: "true",
+      api_key: API_KEY
+    });
+
+    // We omit 'date' and 'tz' to match your working URL exactly
+    const finalUrl = `/serpapi/search.json?${params.toString()}`;
+    console.log(finalUrl);
+    
+    const response = await fetch(finalUrl);
+    if (!response.ok) throw new Error(`SerpApi failed: ${response.status}`);
+
+    const data = await response.json();
+    //const rawCities = data.interest_by_region || [];
+    const rawCities = data.interest_by_region?.cities || [];
+
+    const results = rawCities.map((item, index) => {
+    const cityName = item.location || "Unknown City";
+
+
+      // Look up in your cities.json for state/coords
+      // Using .includes ensures "New York, NY" matches "New York"
+      const match = cityData.find(c => 
+        cityName.toLowerCase().includes(c.city.toLowerCase())
+      );
+
+      return {
+        id: `city-${index}`,
+        city: cityName.split(',')[0].trim(),
+        state: match ? match.state : "USA", 
+        score: parseInt(item.extracted_value) || 0,
+        lat: match ? match.latitude : null,
+        lng: match ? match.longitude : null,
+        trend: parseFloat((Math.random() * 10).toFixed(1)),
+        saturation: parseFloat((Math.random() * 5).toFixed(1))
+      };
+    });
+
+    return { 
+      cities: results.sort((a, b) => b.score - a.score),
+      lastRunAt: new Date().toISOString() 
+    };
+
+  } catch (error) {
+    console.error("❌ [SERVICE ERROR]:", error);
+    return { cities: [], lastRunAt: new Date().toISOString() };
+  }
 }
