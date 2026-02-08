@@ -1,18 +1,18 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useApp } from '../context/AppContext'
-import HeatmapMap from '../components/HeatmapMap'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
+import HeatmapMap from '../components/HeatmapMap';
 
-export default function Dashboard(){
+export default function Dashboard() {
   const { state } = useApp();
   const navigate = useNavigate();
 
-  // Pull from our new state structure
+  // Pull from state
   const { cities, isLoading } = state.analysis;
 
   const goCity = (c) => navigate(`/venues/${c.id}`);
 
-  // 1. Loading State: Shows while the Vite Proxy/SerpAPI is working
+  // Loading state
   if (isLoading) {
     return (
       <div className="container" style={{ textAlign: 'center', paddingTop: 60 }}>
@@ -25,7 +25,7 @@ export default function Dashboard(){
     );
   }
 
-  // 2. Empty State: If someone visits the dashboard before running a search
+  // Empty state
   if (!cities || cities.length === 0) {
     return (
       <div className="container" style={{ textAlign: 'center', paddingTop: 60 }}>
@@ -40,30 +40,41 @@ export default function Dashboard(){
   console.log("Current Cities in State:", cities);
 
   return (
-    <div className="container" style={{ paddingTop: 16 }}>
-      <div className="h1" style={{ marginBottom: 12 }}>Demand Heatmap: {state.artist.name}</div>
-      <div className="card" style={{ padding: 8 }}>
+    <div className="container dashboard-container" style={{ paddingTop: 16 }}>
+      {/* Title */}
+      <div className="h1" style={{ marginBottom: 12 }}>
+        Demand Heatmap: {state.artist.name}
+      </div>
+
+      {/* Map Card */}
+      <div className="card" style={{ padding: 8, marginBottom: 24 }}>
         <HeatmapMap data={cities} onSelectCity={goCity} />
       </div>
 
-      <div className="h2" style={{ marginTop: 12 }}>Ranked Cities</div>
-      <div className="list" style={{ marginTop: 8 }}>
+      {/* Ranked Cities */}
+      <div className="h2" style={{ marginBottom: 8 }}>Ranked Cities</div>
+      <div className="list">
         {cities.map((item, index) => (
-          <div key={item.id} className="card" style={{ padding: 12, display:'flex', alignItems:'center', gap:12 }}>
-            <div style={{ width: 28, textAlign:'center', color:'var(--accent)', fontWeight:800 }}>{index+1}</div>
+          <div
+            key={item.id}
+            className="card"
+            style={{ padding: 12, display: 'flex', alignItems: 'center', gap: 12 }}
+          >
+            <div style={{ width: 28, textAlign: 'center', color: 'var(--accent)', fontWeight: 800 }}>
+              {index + 1}
+            </div>
             <div style={{ flex: 1 }}>
-              {/* Added optional chaining and defaults to prevent crashes */}
-              <div style={{ fontWeight:700 }}>{item.city}, {item.state || 'TX'}</div>
+              <div style={{ fontWeight: 700 }}>{item.city}, {item.state || 'TX'}</div>
               <div className="body">
                 Score {(item.score || 0).toFixed(1)} · 
                 Trend {(item.trend || 0).toFixed(1)} · 
                 Saturation {(item.saturation || 0).toFixed(1)}
               </div>
             </div>
-            <button className="btn" onClick={()=>goCity(item)}>Open</button>
+            <button className="btn" onClick={() => goCity(item)}>Open</button>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }
