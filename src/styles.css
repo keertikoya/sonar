@@ -444,7 +444,7 @@ a{color:inherit;text-decoration:none}
   font-weight: 950;
   letter-spacing: .2px;
   font-size: 18px;
-  color: rgba(240,250,255,0.95);
+  color: rgba(0, 0, 0, 0.95);
 }
 
 /* Day-of-week row */
