@@ -44,6 +44,7 @@ function CalendarView({ performances }) {
   const today = new Date();
   const [month, setMonth] = useState(() => startOfMonth(today));
   const [selectedDay, setSelectedDay] = useState(() => ymd(today));
+  const [selectedEventId, setSelectedEventId] = useState(null); // <-- ADD HERE
 
   const eventsByDay = useMemo(() => {
     const map = new Map();
@@ -75,6 +76,9 @@ function CalendarView({ performances }) {
   }
 
   const selectedEvents = eventsByDay.get(selectedDay) || [];
+const primary =
+  selectedEvents.find(e => e.id === selectedEventId) || selectedEvents[0] || null;
+
 
   const prevMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1));
   const nextMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1));
@@ -101,23 +105,33 @@ function CalendarView({ performances }) {
     const dayEvents = eventsByDay.get(key) || [];
 
     return (
-      <div key={key} className={`tourCalCell ${inMonth ? "" : "muted"}`}>
+      <div key={key} className={`tourCalCell ${inMonth ? "" : "muted"} ${key == selectedDay ? "selected" : ""}`}
+      onClick={() => setSelectedDay(key)}>
         <div className="tourCalCellHeader">
           <span className="tourCalDayNum">{d.getDate()}</span>
         </div>
 
         <div className="tourCalEvents">
-          {dayEvents.slice(0, 2).map(ev => (
-            <div
-              key={ev.id}
-              className="tourCalEvent"
-              style={{ "--h": stateHue(ev.state) }}
-              title={`${ev.city}, ${ev.state} • ${ev.venue}`}
-            >
-              <span className="tourCalEventCity">{cityCode(ev.city)}</span>
-              <span className="tourCalEventName">{ev.city}</span>
-            </div>
-          ))}
+          {dayEvents.slice(0, 2).map((ev) => (
+  <button
+    key={ev.id}
+    type="button"
+    className="tourCalEvent"
+    style={{ "--h": stateHue(ev.state) }}
+    onClick={(e) => {
+      e.stopPropagation();
+      setSelectedDay(key);
+      setSelectedEventId(ev.id);      // ✅ updates sidebar day
+      // Optional: also store selected event if you want
+      // setSelectedEventId(ev.id);
+    }}
+    title={`${ev.city}, ${ev.state} • ${ev.venue}`}
+  >
+    <span className="tourCalEventCity">{cityCode(ev.city)}</span>
+    <span className="tourCalEventName">{ev.city}</span>
+  </button>
+))}
+
 
           {dayEvents.length > 2 && (
             <div className="tourCalMoreLine">
