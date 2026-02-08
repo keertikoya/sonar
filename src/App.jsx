@@ -18,7 +18,7 @@ function Header(){
     <div className="header">
       <div className="container nav">
         <div className="row" style={{gap:16}}>
-          <strong style={{ color: 'var(--primary)', fontSize: 18 }}>Artist Venue</strong>
+          <strong style={{ color: 'var(--primary)', fontSize: 18 }}>Sonar</strong>
           {loggedIn && (
             <>
               <NavLink to="/dashboard" className={({isActive})=> isActive? 'active':''}>Dashboard</NavLink>

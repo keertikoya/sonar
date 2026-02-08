@@ -294,7 +294,7 @@ export default function Venues(){
     <div className="container" style={{ paddingTop: 16 }}>
       <div className="venuesHeader">
         <div className="venuesTitleBlock">
-          <div className="venuesKicker">Artist Venue</div>
+          <div className="venuesKicker">Sonar</div>
           <div className="venuesH1">{city.city}: Venues</div>
           <div className="venuesSub">Shortlist venues that fit your sound, your crowd size, and your best show nights.</div>
         </div>

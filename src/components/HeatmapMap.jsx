@@ -63,5 +63,4 @@ export default function HeatmapMap({ data = [], onSelectCity }){
       </MapContainer>
     </div>
   );
-  );
 }
