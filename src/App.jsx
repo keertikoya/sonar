@@ -8,7 +8,7 @@ import CityDetail from './pages/CityDetail';
 import Venues from './pages/Venues';
 import Tour from './pages/Tour';
 import PerformanceDetail from './pages/PerformanceDetail';
-import Settings from './pages/Settings';
+import Calendar from './pages/Calendar';
 import { AppProvider, useApp } from './context/AppContext';
 
 function Header(){
@@ -36,8 +36,8 @@ function Header(){
               <NavLink to="/tour" className={({isActive})=> isActive ? 'active' : ''}>
                 Tour
               </NavLink>
-              <NavLink to="/settings" className={({isActive})=> isActive ? 'active' : ''}>
-                Settings
+              <NavLink to="/calendar" className={({isActive})=> isActive ? 'active' : ''}>
+                Calendar
               </NavLink>
             </>
           )}
@@ -70,7 +70,7 @@ function Shell(){
           <Route path="/venues/:cityId" element={<Venues />} />
           <Route path="/tour" element={<Tour />} />
           <Route path="/performance/:id" element={<PerformanceDetail />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/calendar" element={<Calendar />} />
         </Routes>
       </div>
     </div>
