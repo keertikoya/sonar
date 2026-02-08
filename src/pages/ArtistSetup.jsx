@@ -3,20 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
 export default function ArtistSetup(){
-  // Note: We now pull 'executeAnalysis' directly from context
   const { state, dispatch, executeAnalysis } = useApp();
   const [name, setName] = useState(state.artist.name);
   const [genre, setGenre] = useState(state.artist.genre);
   const [similar, setSimilar] = useState(state.artist.similar.join(', '));
   
-  // We can use the global loading state or keep a local one for the button
   const [localLoading, setLocalLoading] = useState(false);
   const navigate = useNavigate();
 
   const onRun = async () => {
     setLocalLoading(true);
     
-    // 1. Update the artist info in state
+    // Update the artist info in state
     const artistPayload = { 
       name, 
       genre, 
@@ -24,8 +22,7 @@ export default function ArtistSetup(){
     };
     dispatch({ type: 'SET_ARTIST', payload: artistPayload });
 
-    // 2. Trigger the global executeAnalysis function
-    // This handles the runAnalysis call and the dispatching for you
+    // Trigger the global executeAnalysis function
     await executeAnalysis({ name, genre, similarArtists: similar });
 
     setLocalLoading(false);
@@ -70,7 +67,7 @@ export default function ArtistSetup(){
             <label className="field-label">Genre</label>
             <input 
               className="field-input" 
-              placeholder="indie rock" 
+              placeholder="Country" 
               value={genre} 
               onChange={e=>setGenre(e.target.value)} 
             />
@@ -80,7 +77,7 @@ export default function ArtistSetup(){
             <label className="field-label">Similar Artists <span className="label-optional">(optional)</span></label>
             <input 
               className="field-input" 
-              placeholder="Spoon, Snail Mail, Local Natives" 
+              placeholder="Taylor Swift, Bruno Mars, Beyonce" 
               value={similar} 
               onChange={e=>setSimilar(e.target.value)} 
             />

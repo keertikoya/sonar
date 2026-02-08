@@ -11,10 +11,22 @@ export default function PerformanceDetail(){
   const [date, setDate] = useState(perf?.date || '');
   const [song, setSong] = useState('');
 
+  const [tourId, setTourId] = useState(perf?.tourId || state.tour.activeTourId);
+const [title, setTitle] = useState(perf?.title || '');
+const [time, setTime] = useState(perf?.time || '');
+const [summary, setSummary] = useState(perf?.summary || '');
+const [details, setDetails] = useState(perf?.details || '');
+
+const tours = state.tour.tours || [];
+
+
   if(!perf) return <div className="container">Not found</div>
 
   const save = () => {
-    dispatch({ type: 'UPDATE_PERFORMANCE', payload: { id, date } });
+dispatch({
+  type: 'UPDATE_PERFORMANCE',
+  payload: { id, date, tourId, title, time, summary, details },
+});
     navigate(-1);
   }
   const addSong = () => {
@@ -26,6 +38,33 @@ export default function PerformanceDetail(){
   return (
     <div className="container" style={{ paddingTop: 16 }}>
       <div className="h1" style={{ marginBottom: 8 }}>{perf.city} — {perf.venue}</div>
+      <div className="body">Tour</div>
+<select value={tourId} onChange={e=>setTourId(e.target.value)} className="input">
+  {tours.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+</select>
+
+<div className="body" style={{ marginTop: 8 }}>Event title (optional)</div>
+<input value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g., Austin Night 1" className="input" />
+
+<div className="row" style={{ marginTop: 8, gap: 10 }}>
+  <div style={{ flex: 1 }}>
+    <div className="body">Date</div>
+    <input type="date" value={date} onChange={e=>setDate(e.target.value)} className="input" />
+  </div>
+  <div style={{ width: 180 }}>
+    <div className="body">Time</div>
+    <input type="time" value={time} onChange={e=>setTime(e.target.value)} className="input" />
+  </div>
+</div>
+
+<div className="body" style={{ marginTop: 8 }}>Summary</div>
+<input value={summary} onChange={e=>setSummary(e.target.value)} placeholder="Short one-liner about this show" className="input" />
+
+<div className="body" style={{ marginTop: 8 }}>Details</div>
+<textarea value={details} onChange={e=>setDetails(e.target.value)} rows={5} className="input"
+  placeholder="Load-in, soundcheck, contacts, support acts, notes..." />
+
+
 
       <div className="body">Date (YYYY-MM-DD)</div>
       <input

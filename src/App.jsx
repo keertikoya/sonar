@@ -14,26 +14,45 @@ import { AppProvider, useApp } from './context/AppContext';
 function Header(){
   const { state } = useApp();
   const loggedIn = !!state.user;
+
   return (
     <div className="header">
-      <div className="container nav">
-        <div className="row" style={{gap:16}}>
-          <strong style={{ color: 'var(--primary)', fontSize: 18 }}>Artist Venue</strong>
+      <div className="container nav nav-3col">
+        
+        {/* LEFT */}
+        <div className="nav-left">
+          <strong style={{ color: 'var(--bg)', fontSize: 28 }}>
+            Sonar
+          </strong>
+        </div>
+
+        {/* CENTER */}
+        <div className="nav-center">
           {loggedIn && (
             <>
-              <NavLink to="/dashboard" className={({isActive})=> isActive? 'active':''}>Dashboard</NavLink>
-              <NavLink to="/tour" className={({isActive})=> isActive? 'active':''}>Tour</NavLink>
-              <NavLink to="/settings" className={({isActive})=> isActive? 'active':''}>Settings</NavLink>
+              <NavLink to="/dashboard" className={({isActive})=> isActive ? 'active' : ''}>
+                Dashboard
+              </NavLink>
+              <NavLink to="/tour" className={({isActive})=> isActive ? 'active' : ''}>
+                Tour
+              </NavLink>
+              <NavLink to="/settings" className={({isActive})=> isActive ? 'active' : ''}>
+                Settings
+              </NavLink>
             </>
           )}
         </div>
-        <div style={{color:'var(--subtext)'}}>
-          {loggedIn ? `Hi, ${state.user.name}` : ''}
+
+        {/* RIGHT */}
+        <div className="nav-right">
+          {loggedIn ? `Hey musician!` : ''}
         </div>
+
       </div>
     </div>
-  )
+  );
 }
+
 
 function Shell(){
   const { state } = useApp();
