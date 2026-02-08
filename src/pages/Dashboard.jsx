@@ -66,9 +66,9 @@ export default function Dashboard() {
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700 }}>{item.city}, {item.state || 'TX'}</div>
               <div className="body">
-                Score {(item.score || 0).toFixed(1)} · 
-                Trend {(item.trend || 0).toFixed(1)} · 
-                Saturation {(item.saturation || 0).toFixed(1)}
+              Score: {item.score} · 
+              1 Yr Growth Rate: {Math.round((item.trend || 0) * 10)}% · 
+              Competition Rate: {Math.round((item.saturation || 0) * 10)}% 
               </div>
             </div>
             <button className="btn" onClick={() => goCity(item)}>Open</button>
