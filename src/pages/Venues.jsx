@@ -21,7 +21,6 @@ export default function Venues() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   
-  // Filter States
   const [selectedType, setSelectedType] = useState('All');
   const [minRating, setMinRating] = useState(0);
 
@@ -83,17 +82,14 @@ export default function Venues() {
 
   return (
     <div className="container" style={{ paddingTop: 16, paddingBottom: 40 }}>
-      {/* Page Header */}
       <div style={{ marginBottom: 20 }}>
         <div className="venuesH1">{city.city} Scout</div>
         <div className="body" style={{ opacity: 0.7 }}>Discovery & Booking</div>
       </div>
 
-      {/* --- CONSOLIDATED FILTER CARD --- */}
+      {/* Filter Card */}
       <div className="card" style={{ padding: 20, marginBottom: 24, backgroundColor: '#fff', border: '1px solid #eee' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          
-          {/* Row 1: Search and Rating */}
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <div style={{ flex: 2, minWidth: '200px' }}>
               <div style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', opacity: 0.6 }}>Keyword</div>
@@ -120,7 +116,6 @@ export default function Venues() {
             </div>
           </div>
 
-          {/* Row 2: Category Pills */}
           <div>
             <div style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', opacity: 0.6 }}>Venue Type</div>
             <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
@@ -137,8 +132,7 @@ export default function Venues() {
                     color: selectedType === type ? '#fff' : '#666',
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
-                    fontSize: '0.85rem',
-                    transition: 'all 0.2s'
+                    fontSize: '0.85rem'
                   }}
                 >
                   {type}
@@ -149,7 +143,6 @@ export default function Venues() {
         </div>
       </div>
 
-      {/* Content Area */}
       {loading ? (
         <div className="loadingState">Searching {city.city}...</div>
       ) : (
@@ -159,21 +152,49 @@ export default function Venues() {
           </div>
 
           <div className="venuesGrid">
-            {filteredVenues.map(v => (
-              <div key={v.id} className="venueCard" style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ padding: 20, flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: '1.2rem', marginBottom: 4 }}>{v.name}</div>
-                  <div className="badge" style={{ marginBottom: 12, backgroundColor: '#eef2ff', color: '#4f46e5' }}>{v.type}</div>
-                  <div style={{ fontSize: '0.9rem', color: '#666' }}>📍 {v.address}</div>
-                  {v.rating && <div style={{ fontSize: '0.9rem', color: '#f59e0b', marginTop: 4 }}>⭐ {v.rating} ({v.reviews})</div>}
+            {filteredVenues.map(v => {
+              const phoneUrl = v.phone && v.phone !== "No phone listed" 
+                ? `tel:${v.phone.replace(/\s/g, '')}` 
+                : null;
+
+              return (
+                <div key={v.id} className="venueCard" style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ padding: 20, flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: '1.2rem', marginBottom: 4 }}>{v.name}</div>
+                    <div className="badge" style={{ marginBottom: 12, backgroundColor: '#eef2ff', color: '#4f46e5' }}>{v.type}</div>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <div style={{ fontSize: '0.85rem', color: '#666' }}>📍 {v.address}</div>
+                      
+                      {/* Restore Phone Number Display */}
+                      {v.phone && v.phone !== "No phone listed" && (
+                        <div style={{ fontSize: '0.85rem', color: '#666' }}>📞 {v.phone}</div>
+                      )}
+                      
+                      {v.rating && (
+                        <div style={{ fontSize: '0.85rem', color: '#f59e0b', fontWeight: '600' }}>
+                          ⭐ {v.rating} <span style={{ color: '#999', fontWeight: '400' }}>({v.reviews} reviews)</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div style={{ padding: '12px 20px', borderTop: '1px solid #eee', display: 'flex', gap: 8 }}>
+                    <button className="btn" style={{ flex: 1, padding: '8px' }} onClick={() => addToTour(v)}>Add to Tour</button>
+                    
+                    {/* Website Button */}
+                    {v.website && (
+                      <button className="btn-ghost" title="Website" onClick={() => window.open(v.website, '_blank')}>🌐</button>
+                    )}
+                    
+                    {/* Restore Phone Dial Button */}
+                    {phoneUrl && (
+                      <button className="btn-ghost" title="Call Venue" onClick={() => window.location.href = phoneUrl}>📞</button>
+                    )}
+                  </div>
                 </div>
-                
-                <div style={{ padding: '12px 20px', borderTop: '1px solid #eee', display: 'flex', gap: 8 }}>
-                  <button className="btn" style={{ flex: 1, padding: '8px' }} onClick={() => addToTour(v)}>Add to Tour</button>
-                  {v.website && <button className="btn-ghost" onClick={() => window.open(v.website, '_blank')}>🌐</button>}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}
