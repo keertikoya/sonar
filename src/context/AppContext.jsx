@@ -6,7 +6,13 @@ const initialState = {
   user: null,
   artist: { name: '', genre: '', similar: [] },
   analysis: { cities: [], lastRunAt: null, isLoading: false }, // Added isLoading
-  tour: { performances: [] }
+  tour: {
+  activeTourId: "default-tour",
+  tours: [
+    { id: "default-tour", name: "My Tour" }
+    ],
+    performances: []
+  }
 };
 
 function reducer(state, action){
@@ -23,13 +29,28 @@ function reducer(state, action){
         isLoading: false 
       } 
     };
-    case 'ADD_PERFORMANCE': return { ...state, tour: { ...state.tour, performances: [...state.tour.performances, action.payload] } };
-    case 'UPDATE_PERFORMANCE':
+case 'ADD_PERFORMANCE': {
+  const tourId = action.payload.tourId || state.tour.activeTourId;
+  return {
+    ...state,
+    tour: {
+      ...state.tour,
+      performances: [...state.tour.performances, { ...action.payload, tourId }],
+    },
+  };
+}    case 'UPDATE_PERFORMANCE':
       return { ...state, tour: { ...state.tour, performances: state.tour.performances.map(p => p.id === action.payload.id ? { ...p, ...action.payload } : p) } };
     case 'REMOVE_PERFORMANCE':
       return { ...state, tour: { ...state.tour, performances: state.tour.performances.filter(p => p.id !== action.payload) } };
-    default: return state;
+    case 'ADD_TOUR':
+  return { ...state, tour: { ...state.tour, tours: [...state.tour.tours, action.payload] } };
+
+case 'SET_ACTIVE_TOUR':
+  return { ...state, tour: { ...state.tour, activeTourId: action.payload } };
+
+      default: return state;
   }
+  
 }
 
 const AppContext = createContext();
