@@ -233,25 +233,26 @@ a{color:inherit;text-decoration:none}
   background: #58765d;
 }
 
-.btn.ghost{
-  background:transparent;
-  border:1px solid var(--border);
-  color:var(--text)
+.btn.ghost.calendar-nav {
+  background: var(--primary);
+  border: 2px solid var(--primary);
+  color: var(--bg);
+  font-weight: 2900;
+  font-size: 20px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.btn.ghost:hover{
-  border-color:var(--primary);
-  color:var(--primary)
+.btn.ghost.calendar-nav:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
 /* Layout Helpers */
-
 .row{display:flex;gap:12px;align-items:center}
 .stack{display:flex;flex-direction:column;gap:12px}
 .list{display:flex;flex-direction:column;gap:12px}
 
 /* Badges */
-
 .badge{
   display:inline-flex;
   align-items:center;

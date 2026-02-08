@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react";
+// src/pages/Calendar.jsx
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 
-// Helper functions 
 function ymd(d) {
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -14,10 +14,6 @@ function startOfMonth(date) {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }
 
-function endOfMonth(date) {
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
-}
-
 function addDays(date, n) {
   const d = new Date(date);
   d.setDate(d.getDate() + n);
@@ -26,28 +22,25 @@ function addDays(date, n) {
 
 function cityCode(city = "") {
   const clean = city.replace(/[^a-zA-Z]/g, "").toUpperCase();
-  if (clean.length >= 3) return clean.slice(0, 3);
-  return (clean + "XXX").slice(0, 3);
+  return clean.length >= 3 ? clean.slice(0, 3) : (clean + "XXX").slice(0, 3);
 }
 
 function stateHue(state = "") {
   const s = String(state || "").toUpperCase();
   let hash = 0;
   for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
-  return (hash % 280) + 40;
+  return (hash % 280) + 40; // 40..319
 }
 
-// CalendarView Component
 export default function Calendar() {
   const { state } = useApp();
   const performances = state.tour.performances || [];
-  const today = new Date();
 
-  const [month, setMonth] = useState(() => startOfMonth(today));
-  const [selectedDay, setSelectedDay] = useState(() => ymd(today));
+  const today = new Date();
+  const [month, setMonth] = useState(startOfMonth(today));
+  const [selectedDay, setSelectedDay] = useState(ymd(today));
   const [selectedEventId, setSelectedEventId] = useState(null);
 
-  // Group performances by day
   const eventsByDay = useMemo(() => {
     const map = new Map();
     for (const p of performances) {
@@ -62,116 +55,125 @@ export default function Calendar() {
   const startDow = monthStart.getDay();
   const gridStart = addDays(monthStart, -startDow);
 
-  // Build 7x6 grid
   const days = [];
   for (let i = 0; i < 42; i++) {
     const d = addDays(gridStart, i);
     const key = ymd(d);
     const inMonth = d.getMonth() === monthStart.getMonth();
-    const dayEvents = eventsByDay.get(key) || [];
-    days.push({ d, key, inMonth, dayEvents });
+    const isToday = key === ymd(today);
+    const isSelected = key === selectedDay;
+    days.push({ d, key, inMonth, isToday, isSelected });
   }
 
   const selectedEvents = eventsByDay.get(selectedDay) || [];
   const primary =
-    selectedEvents.find(e => e.id === selectedEventId) || selectedEvents[0] || null;
+    selectedEvents.find((e) => e.id === selectedEventId) || selectedEvents[0] || null;
 
   const prevMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1));
   const nextMonth = () => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1));
 
   return (
-    <div className="container" style={{ paddingTop: 16 }}>
-      <div className="h1" style={{ marginBottom: 12 }}>Calendar</div>
+    <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+      {/* Calendar Grid */}
+      <div style={{ flex: "1 1 600px" }}>
+      <div className="row" style={{ marginBottom: 12, alignItems: "center" }}>
+  <button className="btn ghost calendar-nav" onClick={prevMonth}>←</button>
+  <div className="h2" style={{ flex: 1, textAlign: "center" }}>
+    {month.toLocaleString(undefined, { month: "long", year: "numeric" })}
+  </div>
+  <button className="btn ghost calendar-nav" onClick={nextMonth}>→</button>
+</div>
 
-      <div className="tourCalWrap" style={{ display: "flex", gap: 20, minHeight: 400 }}>
-        {/* LEFT: calendar grid */}
-        <div className="tourCalLeft" style={{ flex: 1 }}>
-          <div className="tourCalHeader">
-            <button className="btn ghost" onClick={prevMonth}>←</button>
-            <div className="tourCalTitle">
-              {month.toLocaleString(undefined, { month: "long", year: "numeric" })}
-            </div>
-            <button className="btn ghost" onClick={nextMonth}>→</button>
-          </div>
 
-          <div className="tourCalDow" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", textAlign: "center", marginBottom: 4 }}>
-            {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(x => (
-              <div key={x}>{x}</div>
-            ))}
-          </div>
+        <div className="row" style={{ fontWeight: 700, marginBottom: 6 }}>
+          {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(x => (
+            <div key={x} style={{ flex: 1, textAlign: "center" }}>{x}</div>
+          ))}
+        </div>
 
-          <div className="tourCalGrid" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2 }}>
-            {days.map(({ d, key, inMonth, dayEvents }) => (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6 }}>
+          {days.map(({ d, key, inMonth, isToday, isSelected }) => {
+            const dayEvents = eventsByDay.get(key) || [];
+            return (
               <div
                 key={key}
-                className={`tourCalCell ${inMonth ? "" : "muted"} ${key === selectedDay ? "selected" : ""}`}
+                className="card"
                 style={{
-                  border: "1px solid #ccc",
-                  minHeight: 60,
-                  padding: 4,
-                  background: inMonth ? "#fff" : "#f5f5f5",
+                  background: isSelected ? "var(--primary)" : "var(--surface)",
+                  color: isSelected ? "#fff" : inMonth ? "var(--text)" : "var(--muted)",
+                  padding: 8,
                   cursor: "pointer",
+                  minHeight: 100, // make each cell taller
                   display: "flex",
                   flexDirection: "column",
+                  borderRadius: 6, // less rounded
+                  border: isToday ? "2px solid var(--accent)" : "1px solid var(--border)",
+                  overflow: "hidden",
+                  fontSize: 13
                 }}
                 onClick={() => setSelectedDay(key)}
               >
-                <div className="tourCalCellHeader" style={{ fontWeight: 600 }}>{d.getDate()}</div>
-                <div className="tourCalEvents" style={{ flex: 1, overflow: "hidden" }}>
-                  {dayEvents.slice(0, 2).map(ev => (
-                    <button
+                <div style={{ fontWeight: 700, marginBottom: 4 }}>{d.getDate()}</div>
+                <div style={{ flex: 1, overflow: "hidden" }}>
+                  {dayEvents.map(ev => (
+                    <div
                       key={ev.id}
-                      type="button"
-                      className="tourCalEvent"
                       style={{
-                        "--h": stateHue(ev.state),
-                        display: "block",
-                        fontSize: "0.7em",
-                        marginTop: 2,
-                        textAlign: "left",
-                        padding: "1px 3px",
+                        marginBottom: 2,
+                        background: `hsl(${stateHue(ev.state)}, 60%, 75%)`,
+                        borderRadius: 4,
+                        padding: "2px 4px",
+                        fontSize: 12,
+                        lineHeight: "1.2em",
+                        whiteSpace: "normal", // allow wrapping
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
                       }}
-                      onClick={e => {
+                      title={`${ev.city}, ${ev.venue}`}
+                      onClick={(e) => {
                         e.stopPropagation();
                         setSelectedEventId(ev.id);
+                        setSelectedDay(key);
                       }}
-                      title={`${ev.city}, ${ev.state} • ${ev.venue}`}
                     >
-                      {cityCode(ev.city)} {ev.city}
-                    </button>
+                      {ev.venue}
+                    </div>
                   ))}
-                  {dayEvents.length > 2 && (
-                    <div className="tourCalMoreLine" style={{ fontSize: "0.7em" }}>+{dayEvents.length - 2} more</div>
-                  )}
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
+      </div>
 
-        {/* RIGHT: selected day panel */}
-        <div className="tourCalRight" style={{ width: 250 }}>
-          <div className="tourCalDayPanel">
-            <div className="h3" style={{ marginBottom: 8 }}>
-              {selectedDay} • {selectedEvents.length} show{selectedEvents.length === 1 ? "" : "s"}
-            </div>
-            {selectedEvents.length === 0 ? (
-              <div className="body">No shows on this date.</div>
-            ) : (
-              <div className="list">
-                {selectedEvents.map(ev => (
-                  <Link key={ev.id} to={`/performance/${ev.id}`} className="card" style={{ padding: 8, display: "block" }}>
-                    <div style={{ fontWeight: 800, display: "flex", gap: 6, alignItems: "center" }}>
-                      <span className="tourCityPill" style={{ "--h": stateHue(ev.state) }}>{cityCode(ev.city)}</span>
-                      {ev.city}, {ev.state}
-                    </div>
-                    <div className="body">{ev.venue}</div>
-                    <div className="body">{ev.date}</div>
-                  </Link>
-                ))}
-              </div>
-            )}
+      {/* Day Panel */}
+      <div style={{ flex: "1 1 320px" }}>
+        <div className="card pad">
+          <div className="h2" style={{ marginBottom: 8 }}>
+            {selectedDay} • {selectedEvents.length} show{selectedEvents.length !== 1 ? "s" : ""}
           </div>
+          {selectedEvents.length === 0 ? (
+            <div className="body">No shows on this date.</div>
+          ) : (
+            <div className="list">
+              {selectedEvents.map(item => (
+                <Link
+                  key={item.id}
+                  to={`/performance/${item.id}`}
+                  className="card pad"
+                  style={{ display: "block" }}
+                >
+                  <div style={{ fontWeight: 800, display: "flex", gap: 8, alignItems: "center" }}>
+                    <span className="badge" style={{ "--h": stateHue(item.state) }}>
+                      {cityCode(item.city)}
+                    </span>
+                    {item.city}, {item.state}
+                  </div>
+                  <div className="body">{item.venue}</div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
