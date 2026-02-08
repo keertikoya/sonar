@@ -3,17 +3,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { searchVenues } from '../services/venuesService';
 
-// UI Components
-function IconButton({ title, onClick, children, variant = 'ghost', disabled = false }) {
+function IconButton({ title, onClick, children, variant = 'ghost' }) {
   const cls = variant === 'primary' ? 'iconBtn iconBtn--primary' : 'iconBtn';
   return (
-    <button className={cls} title={title} onClick={onClick} type="button" disabled={disabled}>
+    <button className={cls} title={title} onClick={onClick} type="button">
       {children}
     </button>
   );
 }
 
-// Main Page Component
 export default function Venues() {
   const { state, dispatch } = useApp();
   const { cityId } = useParams();
@@ -22,40 +20,48 @@ export default function Venues() {
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  
+  // Filter States
+  const [selectedType, setSelectedType] = useState('All');
+  const [minRating, setMinRating] = useState(0);
 
-  // Get current city context from global state
   const city = useMemo(
     () => state.analysis.cities.find(c => c.id === cityId),
     [state.analysis.cities, cityId]
   );
 
-  // Fetch live data from SerpApi
-useEffect(() => {
-  const loadData = async () => {
-    const hasCoords = city && 
-                     city.lat !== undefined && city.lat !== null &&
-                     city.lng !== undefined && city.lng !== null;
+  const venueTypes = useMemo(() => {
+    const types = new Set(venues.map(v => v.type).filter(Boolean));
+    return ['All', ...Array.from(types)];
+  }, [venues]);
 
-    if (hasCoords) {
-      setLoading(true);
-      try {
-        const results = await searchVenues(city.city, city.state, city.lat, city.lng);
-        setVenues(results);
-      } catch (err) {
-        console.error("Venues Page Error:", err);
-      } finally {
-        setLoading(false);
+  useEffect(() => {
+    const loadData = async () => {
+      if (city?.lat && city?.lng) {
+        setLoading(true);
+        try {
+          const results = await searchVenues(city.city, city.state, city.lat, city.lng);
+          setVenues(results);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
       }
-    } else {
-      console.log("Venues.jsx: Waiting for valid city coordinates...");
-    }
-  };
+    };
+    loadData();
+  }, [city]);
 
-  loadData();
-}, [city]); 
-  // Navigation Handler
+  const filteredVenues = useMemo(() => {
+    return venues.filter(v => {
+      const matchesQuery = v.name.toLowerCase().includes(query.toLowerCase());
+      const matchesType = selectedType === 'All' || v.type === selectedType;
+      const matchesRating = (v.rating || 0) >= minRating;
+      return matchesQuery && matchesType && matchesRating;
+    });
+  }, [venues, query, selectedType, minRating]);
+
   const addToTour = (venue) => {
-    if (!city) return;
     const performanceId = `perf-${Date.now()}`;
     dispatch({ 
       type: 'ADD_PERFORMANCE', 
@@ -73,101 +79,101 @@ useEffect(() => {
     navigate(`/performance/${performanceId}`);
   };
 
-  // Search Filtering
-  const filteredVenues = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return venues;
-    return venues.filter(v => 
-      v.name.toLowerCase().includes(q) || 
-      v.address.toLowerCase().includes(q)
-    );
-  }, [venues, query]);
-
-  if (!city) return <div className="container">City context not found.</div>;
+  if (!city) return <div className="container">City not found.</div>;
 
   return (
-    <div className="container" style={{ paddingTop: 16 }}>
-      <div className="venuesHeader">
-        <div className="venuesTitleBlock">
-          <div className="venuesKicker">Live Scout</div>
-          <div className="venuesH1">{city.city} Venues</div>
-          <div className="venuesSub">Direct results for {city.city} music venues.</div>
-        </div>
+    <div className="container" style={{ paddingTop: 16, paddingBottom: 40 }}>
+      {/* Page Header */}
+      <div style={{ marginBottom: 20 }}>
+        <div className="venuesH1">{city.city} Scout</div>
+        <div className="body" style={{ opacity: 0.7 }}>Discovery & Booking</div>
+      </div>
 
-        <div className="venuesControls">
-          <input
-            className="venuesSearch"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search venue name or address..."
-          />
+      {/* --- CONSOLIDATED FILTER CARD --- */}
+      <div className="card" style={{ padding: 20, marginBottom: 24, backgroundColor: '#fff', border: '1px solid #eee' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          
+          {/* Row 1: Search and Rating */}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <div style={{ flex: 2, minWidth: '200px' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', opacity: 0.6 }}>Keyword</div>
+              <input
+                className="input"
+                style={{ margin: 0 }}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search venue names..."
+              />
+            </div>
+            <div style={{ flex: 1, minWidth: '140px' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: 6, textTransform: 'uppercase', opacity: 0.6 }}>Min Rating</div>
+              <select 
+                className="input" 
+                style={{ margin: 0 }}
+                value={minRating} 
+                onChange={(e) => setMinRating(Number(e.target.value))}
+              >
+                <option value={0}>Any Stars</option>
+                <option value={4}>4.0+ Stars</option>
+                <option value={4.5}>4.5+ Stars</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Row 2: Category Pills */}
+          <div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', opacity: 0.6 }}>Venue Type</div>
+            <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
+              {venueTypes.map(type => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  style={{
+                    padding: '6px 16px',
+                    borderRadius: '30px',
+                    border: '1px solid',
+                    borderColor: selectedType === type ? '#0077ff' : '#ddd',
+                    backgroundColor: selectedType === type ? '#0077ff' : 'transparent',
+                    color: selectedType === type ? '#fff' : '#666',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    fontSize: '0.85rem',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* Content Area */}
       {loading ? (
-        <div className="loadingState">Gathering venue data...</div>
+        <div className="loadingState">Searching {city.city}...</div>
       ) : (
         <>
-          <div className="venuesMetaRow">
-            <div className="venuesMetaText">Found <b>{filteredVenues.length}</b> live music spots</div>
+          <div style={{ marginBottom: 12, opacity: 0.6, fontSize: '0.9rem' }}>
+            Found {filteredVenues.length} results matching filters
           </div>
 
           <div className="venuesGrid">
-            {filteredVenues.map(v => {
-              const phoneUrl = v.phone && v.phone !== "No phone listed" 
-                ? `tel:${v.phone.replace(/\s/g, '')}` 
-                : null;
-
-              return (
-                <div key={v.id} className="venueCard" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div className="venueCardTop" style={{ padding: '20px' }}>
-                    <div className="venueCardTitle" style={{ fontSize: '1.25rem', marginBottom: '4px' }}>{v.name}</div>
-                    <div className="badge badge--soft" style={{ marginBottom: '12px' }}>{v.type}</div>
-                    
-                    <div className="venueSummary">
-                      <div className="venueSummaryItem" style={{ marginBottom: '6px', fontSize: '0.9rem', color: '#666' }}>📍 {v.address}</div>
-                      {v.phone && <div className="venueSummaryItem" style={{ marginBottom: '6px', fontSize: '0.9rem' }}>📞 {v.phone}</div>}
-                      {v.rating && (
-                        <div className="venueSummaryItem" style={{ fontSize: '0.9rem', fontWeight: '500', color: '#f59e0b' }}>
-                          ⭐ {v.rating} <span style={{ color: '#999', fontWeight: '400' }}>({v.reviews} reviews)</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="venueActions" style={{ padding: '12px 16px', borderTop: '1px solid #eee' }}>
-                    {v.website && (
-                      <IconButton 
-                        title="Website" 
-                        onClick={() => window.open(v.website, '_blank')}
-                      >
-                        🌐 Website
-                      </IconButton>
-                    )}
-                    
-                    {phoneUrl && (
-                      <IconButton 
-                        title="Call" 
-                        onClick={() => window.location.href = phoneUrl}
-                      >
-                        📞 Call
-                      </IconButton>
-                    )}
-
-                    <IconButton
-                      variant="primary"
-                      title="Add to tour"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addToTour(v);
-                      }}
-                    >
-                      ➕ Add to Tour
-                    </IconButton>
-                  </div>
+            {filteredVenues.map(v => (
+              <div key={v.id} className="venueCard" style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ padding: 20, flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: '1.2rem', marginBottom: 4 }}>{v.name}</div>
+                  <div className="badge" style={{ marginBottom: 12, backgroundColor: '#eef2ff', color: '#4f46e5' }}>{v.type}</div>
+                  <div style={{ fontSize: '0.9rem', color: '#666' }}>📍 {v.address}</div>
+                  {v.rating && <div style={{ fontSize: '0.9rem', color: '#f59e0b', marginTop: 4 }}>⭐ {v.rating} ({v.reviews})</div>}
                 </div>
-              );
-            })}
+                
+                <div style={{ padding: '12px 20px', borderTop: '1px solid #eee', display: 'flex', gap: 8 }}>
+                  <button className="btn" style={{ flex: 1, padding: '8px' }} onClick={() => addToTour(v)}>Add to Tour</button>
+                  {v.website && <button className="btn-ghost" onClick={() => window.open(v.website, '_blank')}>🌐</button>}
+                </div>
+              </div>
+            ))}
           </div>
         </>
       )}
