@@ -43,7 +43,7 @@ export default function Dashboard() {
     <div className="container dashboard-container" style={{ paddingTop: 16 }}>
       {/* Title */}
       <div className="h1" style={{ marginBottom: 12 }}>
-        Demand Heatmap: {state.artist.name}
+        {state.artist.name}
       </div>
 
       {/* Map Card */}
