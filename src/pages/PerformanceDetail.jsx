@@ -39,29 +39,10 @@ const tours = state.tour.tours || [];
   return (
     <div className="container" style={{ paddingTop: 16 }}>
       <div className="h1" style={{ marginBottom: 8 }}>{perf.city} — {perf.venue}</div>
-      <div className="row" style={{ gap: 10, alignItems: "flex-end" }}>
-  <div style={{ flex: 1 }}>
-    <div className="body">Tour</div>
-    <select
-      value={tourId}
-      onChange={(e) => setTourId(e.target.value)}
-      className="input"
-    >
-      {(state.tour.tours || []).map(t => (
-        <option key={t.id} value={t.id}>{t.name}</option>
-      ))}
-    </select>
-  </div>
-
-  <button
-    type="button"
-    className="btn"
-    onClick={createTourInline}
-  >
-    + New Tour
-  </button>
-</div>
-
+      <div className="body">Tour</div>
+<select value={tourId} onChange={e=>setTourId(e.target.value)} className="input">
+  {tours.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+</select>
 
 <div className="body" style={{ marginTop: 8 }}>Event title (optional)</div>
 <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g., Austin Night 1" className="input" />
