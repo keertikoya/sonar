@@ -51,17 +51,50 @@ case 'SET_ACTIVE_TOUR':
       default: return state;
   }
   
+  
 }
 
 const AppContext = createContext();
 
 export function AppProvider({ children }){
-  const [state, dispatch] = useReducer(reducer, initialState, (init)=>{
-    try {
-      const saved = localStorage.getItem('artist-venue-state');
-      return saved ? JSON.parse(saved) : init;
-    } catch { return init; }
-  });
+  const [state, dispatch] = useReducer(reducer, initialState, (init) => {
+  try {
+    const savedRaw = localStorage.getItem('artist-venue-state');
+    if (!savedRaw) return init;
+
+    const saved = JSON.parse(savedRaw);
+
+    // ---- MIGRATIONS / DEFAULTS ----
+    const merged = {
+      ...init,
+      ...saved,
+      analysis: { ...init.analysis, ...(saved.analysis || {}) },
+      artist: { ...init.artist, ...(saved.artist || {}) },
+      tour: { ...init.tour, ...(saved.tour || {}) },
+    };
+
+    // Ensure tours exist
+    if (!Array.isArray(merged.tour.tours) || merged.tour.tours.length === 0) {
+      merged.tour.tours = init.tour.tours;
+    }
+
+    // Ensure activeTourId exists and is valid
+    if (!merged.tour.activeTourId || !merged.tour.tours.some(t => t.id === merged.tour.activeTourId)) {
+      merged.tour.activeTourId = merged.tour.tours[0].id;
+    }
+
+    // Ensure every performance has a tourId
+    merged.tour.performances = (merged.tour.performances || []).map(p => ({
+      ...p,
+      tourId: p.tourId || merged.tour.activeTourId,
+    }));
+
+    return merged;
+  } catch {
+    return init;
+  }
+});
+
 
   // Action: Trigger the real API analysis
 const executeAnalysis = async (artistData) => {

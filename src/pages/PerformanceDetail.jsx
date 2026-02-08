@@ -29,6 +29,32 @@ dispatch({
 });
     navigate(-1);
   }
+
+  function createTourInline() {
+  const name = window.prompt("New tour name?");
+  if (!name) return;
+
+  const id =
+    (typeof crypto !== "undefined" && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+  // If tours array doesn't exist for some reason, don't proceed silently
+  const existingTours = state?.tour?.tours;
+  if (!Array.isArray(existingTours)) {
+    alert("Tours are not initialized yet. Check initialState in AppContext.");
+    return;
+  }
+
+  dispatch({ type: "ADD_TOUR", payload: { id, name } });
+  dispatch({ type: "SET_ACTIVE_TOUR", payload: id });
+
+  // set local selection too
+  setTourId(id);
+}
+
+
+
   const addSong = () => {
     if(!song) return;
     dispatch({ type: 'UPDATE_PERFORMANCE', payload: { id, setlist: [...(perf.setlist||[]), song] } });
@@ -38,10 +64,29 @@ dispatch({
   return (
     <div className="container" style={{ paddingTop: 16 }}>
       <div className="h1" style={{ marginBottom: 8 }}>{perf.city} — {perf.venue}</div>
-      <div className="body">Tour</div>
-<select value={tourId} onChange={e=>setTourId(e.target.value)} className="input">
-  {tours.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-</select>
+      <div className="row" style={{ gap: 10, alignItems: "flex-end" }}>
+  <div style={{ flex: 1 }}>
+    <div className="body">Tour</div>
+    <select
+      value={tourId}
+      onChange={(e) => setTourId(e.target.value)}
+      className="input"
+    >
+      {(state.tour.tours || []).map(t => (
+        <option key={t.id} value={t.id}>{t.name}</option>
+      ))}
+    </select>
+  </div>
+
+  <button
+    type="button"
+    className="btn"
+    onClick={createTourInline}
+  >
+    + New Tour
+  </button>
+</div>
+
 
 <div className="body" style={{ marginTop: 8 }}>Event title (optional)</div>
 <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g., Austin Night 1" className="input" />

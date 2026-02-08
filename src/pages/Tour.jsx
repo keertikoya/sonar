@@ -30,13 +30,11 @@ function cityCode(city = "") {
   return (clean + "XXX").slice(0, 3);
 }
 
-// Deterministic hue based on state code (TX, CA, etc.)
 function stateHue(state = "") {
   const s = String(state || "").toUpperCase();
   let hash = 0;
   for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
-  // keep in a nice neon-friendly hue range
-  return (hash % 280) + 40; // 40..319
+  return (hash % 280) + 40; 
 }
 
 
@@ -59,8 +57,7 @@ function CalendarView({ performances }) {
   const monthStart = startOfMonth(month);
   const monthEnd = endOfMonth(month);
 
-  // build grid starting Sunday
-  const startDow = monthStart.getDay(); // 0=Sun
+  const startDow = monthStart.getDay(); 
   const gridStart = addDays(monthStart, -startDow);
 
   const days = [];
@@ -121,9 +118,7 @@ const primary =
     onClick={(e) => {
       e.stopPropagation();
       setSelectedDay(key);
-      setSelectedEventId(ev.id);      // ✅ updates sidebar day
-      // Optional: also store selected event if you want
-      // setSelectedEventId(ev.id);
+      setSelectedEventId(ev.id);
     }}
     title={`${ev.city}, ${ev.state} • ${ev.venue}`}
   >
@@ -177,9 +172,10 @@ const primary =
 }
 
 export default function Tour() {
-  const { state } = useApp();
-  const [view, setView] = useState("timeline"); // "timeline" | "calendar"
+  const { state, dispatch } = useApp();
+  const [view, setView] = useState("timeline");
 
+  const tours = state.tour.tours || [];
   const activeTourId = state.tour.activeTourId;
 
   const performances = useMemo(() => {
@@ -187,6 +183,14 @@ export default function Tour() {
       .filter(p => p.tourId === activeTourId)
       .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
   }, [state.tour.performances, activeTourId]);
+
+  function createTour() {
+    const name = prompt("Tour name?");
+    if (!name) return;
+    const id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+    dispatch({ type: "ADD_TOUR", payload: { id, name } });
+    dispatch({ type: "SET_ACTIVE_TOUR", payload: id });
+  }
 
   return (
     <div className="container" style={{ paddingTop: 16 }}>
