@@ -23,12 +23,13 @@ const tours = state.tour.tours || [];
   if(!perf) return <div className="container">Not found</div>
 
   const save = () => {
-dispatch({
-  type: 'UPDATE_PERFORMANCE',
-  payload: { id, date, tourId, title, time, summary, details },
-});
-    navigate(-1);
+    dispatch({
+    type: 'UPDATE_PERFORMANCE',
+    payload: { id, date, tourId, title, time, summary, details },
+    });
+    navigate('/tour');
   }
+  
   const addSong = () => {
     if(!song) return;
     dispatch({ type: 'UPDATE_PERFORMANCE', payload: { id, setlist: [...(perf.setlist||[]), song] } });

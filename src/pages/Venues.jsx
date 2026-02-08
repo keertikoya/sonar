@@ -53,12 +53,13 @@ export default function Venues() {
         venue: venue.name, 
         address: venue.address,
         date: null, 
-        setlist: [] 
+        setlist: [],
+        tourId: state.tour.activeTourId,
       } 
     });
-    navigate('/tour');
+    navigate(`/performance/${performanceId}`);
   };
-
+  
   // 3. Search Filtering
   const filteredVenues = useMemo(() => {
     const q = query.trim().toLowerCase();

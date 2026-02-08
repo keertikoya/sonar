@@ -30,12 +30,10 @@ function cityCode(city = "") {
   return (clean + "XXX").slice(0, 3);
 }
 
-// Deterministic hue based on state code (TX, CA, etc.)
 function stateHue(state = "") {
   const s = String(state || "").toUpperCase();
   let hash = 0;
   for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) >>> 0;
-  // keep in a nice neon-friendly hue range
   return (hash % 280) + 40; // 40..319
 }
 
@@ -121,9 +119,7 @@ const primary =
     onClick={(e) => {
       e.stopPropagation();
       setSelectedDay(key);
-      setSelectedEventId(ev.id);      // ✅ updates sidebar day
-      // Optional: also store selected event if you want
-      // setSelectedEventId(ev.id);
+      setSelectedEventId(ev.id); 
     }}
     title={`${ev.city}, ${ev.state} • ${ev.venue}`}
   >
