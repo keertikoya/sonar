@@ -33,24 +33,68 @@ export default function ArtistSetup(){
   };
 
   return (
-    <div className="container" style={{ paddingTop: 16 }}>
-      <div className="h1" style={{ marginBottom: 8 }}>Artist Setup</div>
-      <div className="body" style={{ marginBottom: 24 }}>We’ll analyze search demand and venue saturation to find your best cities.</div>
+    <div className="setup-stage">
+      {/* Decorative vinyl stack */}
+      <div className="vinyl-stack">
+        <div className="stacked-vinyl stacked-1"></div>
+        <div className="stacked-vinyl stacked-2"></div>
+        <div className="stacked-vinyl stacked-3"></div>
+      </div>
 
-      <div className="stack">
-        <label className="body">Band / Artist Name</label>
-        <input className="input" placeholder="e.g., The Longhorns" value={name} onChange={e=>setName(e.target.value)} />
+      {/* Open layout - no container box */}
+      <div className="setup-content">
+        <div className="title-section">
+          <div className="title-accent-bar"></div>
+          <h1 className="page-title">
+            Set Up Your<br />
+            <span className="title-highlight">Profile</span>
+          </h1>
+        </div>
 
-        <label className="body">Primary Genre</label>
-        <input className="input" placeholder="e.g., indie rock" value={genre} onChange={e=>setGenre(e.target.value)} />
+        <p className="intro-text">
+          We'll analyze search demand and venue saturation to find your best cities
+        </p>
 
-        <label className="body">Similar Artists (comma-separated, optional)</label>
-        <input className="input" placeholder="e.g., Spoon, Snail Mail" value={similar} onChange={e=>setSimilar(e.target.value)} />
+        <div className="form-layout">
+          <div className="field-group">
+            <label className="field-label">Artist Name</label>
+            <input 
+              className="field-input" 
+              placeholder="The Longhorns" 
+              value={name} 
+              onChange={e=>setName(e.target.value)} 
+            />
+          </div>
+
+          <div className="field-group">
+            <label className="field-label">Genre</label>
+            <input 
+              className="field-input" 
+              placeholder="indie rock" 
+              value={genre} 
+              onChange={e=>setGenre(e.target.value)} 
+            />
+          </div>
+
+          <div className="field-group field-wide">
+            <label className="field-label">Similar Artists <span className="label-optional">(optional)</span></label>
+            <input 
+              className="field-input" 
+              placeholder="Spoon, Snail Mail, Local Natives" 
+              value={similar} 
+              onChange={e=>setSimilar(e.target.value)} 
+            />
+          </div>
+        </div>
 
         <button className="btn" disabled={localLoading || !name || !genre} onClick={onRun}>
           {localLoading ? 'Analyzing…' : 'Run Analysis'}
         </button>
       </div>
+
+      {/* Decorative elements */}
+      <div className="floating-note floating-note-1">♪</div>
+      <div className="floating-note floating-note-2">♫</div>
     </div>
   )
 }
