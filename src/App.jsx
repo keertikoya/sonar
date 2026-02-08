@@ -45,7 +45,7 @@ function Header(){
 
         {/* RIGHT */}
         <div className="nav-right">
-          {loggedIn ? `Hi, ${state.user.name}` : ''}
+          {loggedIn ? `Hey musician!` : ''}
         </div>
 
       </div>
