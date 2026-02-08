@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 
 export default function Tour() {
   const { state, dispatch } = useApp();
+  const navigate = useNavigate();
 
   const tours = state.tour.tours || [];
   const activeTourId =
@@ -29,6 +30,12 @@ export default function Tour() {
       .filter((p) => (p.tourId || activeTourId) === activeTourId)
       .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
   }, [state.tour.performances, activeTourId]);
+
+  const deletePerformance = (id) => {
+    if (window.confirm("Delete this performance?")) {
+      dispatch({ type: "REMOVE_PERFORMANCE", payload: id });
+    }
+  };
 
   return (
     <div className="container" style={{ paddingTop: 16 }}>
@@ -73,21 +80,49 @@ export default function Tour() {
 
       <div className="list" style={{ marginTop: 12 }}>
         {performances.map((item) => (
-          <Link
+          <div
             key={item.id}
-            to={`/performance/${item.id}`}
             className="card"
-            style={{ padding: 12, display: "block" }}
+            style={{
+              padding: 12,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
           >
-            <div style={{ fontWeight: 700 }}>
-              {item.city}, {item.state}
+            {/* Left side: clickable info */}
+            <Link
+              to={`/performance/${item.id}`}
+              style={{ flex: 1, textDecoration: "none", color: "inherit" }}
+            >
+              <div style={{ fontWeight: 700 }}>
+                {item.city}, {item.state}
+              </div>
+              <div className="body">{item.venue}</div>
+              <div className="body">
+                {item.date ? item.date : "Pick a date"}
+                {item.time ? ` • ${item.time}` : ""}
+              </div>
+            </Link>
+
+            {/* Right side: Edit & Delete buttons */}
+            <div style={{ display: "flex", gap: 32, marginLeft: 12, paddingRight: 42 }}>
+              <button
+                className="btn ghost"
+                style={{ color: "var(--bg)", background: "var(--secondary)" }}
+                onClick={() => navigate(`/performance/${item.id}`)}
+              >
+                Edit
+              </button>
+              <button
+                className="btn ghost"
+                style={{ color: "var(--bg)", background: "var(--secondary)" }}
+                onClick={() => deletePerformance(item.id)}
+              >
+                Delete
+              </button>
             </div>
-            <div className="body">{item.venue}</div>
-            <div className="body">
-              {item.date ? item.date : "Pick a date"}
-              {item.time ? ` • ${item.time}` : ""}
-            </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>
