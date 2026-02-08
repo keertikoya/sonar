@@ -153,7 +153,6 @@ export default function Venues() {
 
           <div className="venuesGrid">
             {filteredVenues.map(v => {
-              // Re-implementing the phone formatting logic
               const phoneUrl = v.phone && v.phone !== "No phone listed" 
                 ? `tel:${v.phone.replace(/\s/g, '')}` 
                 : null;
