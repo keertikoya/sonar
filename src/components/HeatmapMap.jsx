@@ -18,7 +18,7 @@ const stateMap = {
   'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
 };
 
-// 1. BUILD THE LOOKUP TABLE
+// Build lookup table
 const cityLookup = {};
 cityData.forEach(c => {
   // Key format: "houston, texas"
