@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { searchVenues } from '../services/venuesService';
 
-// --- UI Components ---
+// UI Components
 function IconButton({ title, onClick, children, variant = 'ghost', disabled = false }) {
   const cls = variant === 'primary' ? 'iconBtn iconBtn--primary' : 'iconBtn';
   return (
@@ -13,7 +13,7 @@ function IconButton({ title, onClick, children, variant = 'ghost', disabled = fa
   );
 }
 
-// --- Main Page Component ---
+// Main Page Component
 export default function Venues() {
   const { state, dispatch } = useApp();
   const { cityId } = useParams();
