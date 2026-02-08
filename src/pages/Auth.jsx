@@ -18,7 +18,7 @@ export default function Auth(){
 
   return (
     <div className="vinyl-hero">
-      {/* Large vinyl record - main visual */}
+      {/* Large vinyl record */}
       <div className={`vinyl-disc ${mounted ? 'vinyl-disc--spin' : ''}`}>
         <div className="vinyl-grooves">
           {[...Array(40)].map((_, i) => (
@@ -33,10 +33,15 @@ export default function Auth(){
 
       {/* Main content - no boxes */}
       <div className={`hero-content ${mounted ? 'hero-content--visible' : ''}`}>
-        <h1 className="hero-title">
-          Artist<br />
-          <span className="hero-title-emphasis">Venue</span>
-        </h1>
+      <h1 className="hero-title" style={{
+        fontSize: '7rem',
+        lineHeight: 1.1,
+        fontWeight: 900,
+        color: 'var(--text)',
+        textShadow: '4px 4px 0 var(--secondary)' // blue shadow behind the black text
+      }}>
+        Sonar
+      </h1>
         
         <p className="hero-subtitle">
           Tour where you're already wanted

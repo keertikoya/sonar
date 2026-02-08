@@ -749,7 +749,7 @@ a{color:inherit;text-decoration:none}
 .hero-subtitle{
   font-size: 26px;
   line-height: 1.4;
-  color: #1F1F1F;
+  color: var(--secondary);
   margin: 0 0 16px 0;
   font-weight: 600;
   max-width: 480px;
