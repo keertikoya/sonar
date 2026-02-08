@@ -65,16 +65,6 @@ const tours = state.tour.tours || [];
 <textarea value={details} onChange={e=>setDetails(e.target.value)} rows={5} className="input"
   placeholder="Load-in, soundcheck, contacts, support acts, notes..." />
 
-
-
-      <div className="body">Date (YYYY-MM-DD)</div>
-      <input
-        type="date"
-        value={date}
-        onChange={e=>setDate(e.target.value)}
-        className="input"
-      />
-
       <div className="h3" style={{ marginTop: 8 }}>Setlist</div>
       <div className="list">
         {(perf.setlist||[]).map((s, i)=> <div key={s+i} className="body">{i+1}. {s}</div>)}
