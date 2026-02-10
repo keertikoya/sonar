@@ -58,7 +58,7 @@ export default function Dashboard() {
           <div
             key={item.id}
             className="card"
-            style={{ padding: 12, display: 'flex', alignItems: 'center', gap: 12 }}
+            style={{ padding: 18, display: 'flex', alignItems: 'center', gap: 12 }}
           >
             <div style={{ width: 28, textAlign: 'center', color: 'var(--accent)', fontWeight: 800 }}>
               {index + 1}
