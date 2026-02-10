@@ -25,6 +25,7 @@ export async function searchTracks(query) {
       artist: track.artist,
       image: track.image?.[1]?.['#text'] || '' 
     }));
+    
   } catch (error) {
     console.error("Music Search Error:", error);
     return [];

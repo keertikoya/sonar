@@ -2,7 +2,7 @@ const API_KEY = import.meta.env.VITE_SERP_API_KEY;
 
 export async function searchVenues(cityName, stateName, lat, lng) {
   if (lat === undefined || lng === undefined || lat === null || lng === null) {
-    console.warn("searchVenues aborted: Coordinates are missing.");
+    console.warn("Venue searching aborted: Coordinates are missing.");
     return []; 
   }
 

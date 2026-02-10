@@ -66,14 +66,13 @@ export async function runAnalysis({ name, genre }) {
       };
     });
 
-    // Filter out results where score is 0 if desired
     return { 
       cities: results.sort((a, b) => b.score - a.score),
       lastRunAt: new Date().toISOString() 
     };
 
   } catch (error) {
-    console.error("❌ [SERVICE ERROR]:", error);
+    console.error("[SERVICE ERROR]:", error);
     return { cities: [], lastRunAt: new Date().toISOString() };
   }
 }
