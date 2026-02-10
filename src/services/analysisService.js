@@ -1,6 +1,6 @@
 import cityData from '../data/cities.json';
 
-const API_KEY = "41b62188dbc8c43a62c470b5400bcba4a5dab6d411918164bfccfa6d09caa743";
+const API_KEY = "";
 
 async function resolveTopicId(query) {
   const params = new URLSearchParams({

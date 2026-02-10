@@ -1,4 +1,4 @@
-const API_KEY = '9bc3694502b46c46e5de400d4735a22f';
+const API_KEY = '';
 const BASE_URL = 'https://ws.audioscrobbler.com/2.0/';
 
 export async function searchTracks(query) {

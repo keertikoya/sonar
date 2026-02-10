@@ -1,4 +1,4 @@
-const API_KEY = "41b62188dbc8c43a62c470b5400bcba4a5dab6d411918164bfccfa6d09caa743";
+const API_KEY = "";
 
 export async function searchVenues(cityName, stateName, lat, lng) {
   if (lat === undefined || lng === undefined || lat === null || lng === null) {

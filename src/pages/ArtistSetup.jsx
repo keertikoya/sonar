@@ -2,31 +2,37 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 
-export default function ArtistSetup(){
-  const { state, dispatch, executeAnalysis } = useApp();
-  const [name, setName] = useState(state.artist.name);
-  const [genre, setGenre] = useState(state.artist.genre);
-  const [similar, setSimilar] = useState(state.artist.similar.join(', '));
-  
+export default function ArtistSetup() {
+  const { dispatch, executeAnalysis } = useApp();
+
+  // Initializing with empty strings to ensure placeholders show on reload
+  const [name, setName] = useState("");
+  const [genre, setGenre] = useState("");
+  const [similar, setSimilar] = useState("");
+
   const [localLoading, setLocalLoading] = useState(false);
   const navigate = useNavigate();
 
   const onRun = async () => {
     setLocalLoading(true);
-    
-    // Update the artist info in state
-    const artistPayload = { 
-      name, 
-      genre, 
-      similar: similar.split(',').map(s => s.trim()).filter(Boolean) 
-    };
-    dispatch({ type: 'SET_ARTIST', payload: artistPayload });
+    try {
+      // Update the artist info in state
+      const artistPayload = {
+        name,
+        genre,
+        similar: similar.split(',').map(s => s.trim()).filter(Boolean)
+      };
+      dispatch({ type: 'SET_ARTIST', payload: artistPayload });
 
-    // Trigger the global executeAnalysis function
-    await executeAnalysis({ name, genre, similarArtists: similar });
-
-    setLocalLoading(false);
-    navigate('/dashboard');
+      // Trigger the global executeAnalysis function
+      await executeAnalysis({ name, genre, similarArtists: similar });
+      
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Analysis failed:", error);
+    } finally {
+      setLocalLoading(false);
+    }
   };
 
   return (
@@ -38,7 +44,6 @@ export default function ArtistSetup(){
         <div className="stacked-vinyl stacked-3"></div>
       </div>
 
-      {/* Open layout - no container box */}
       <div className="setup-content">
         <div className="title-section">
           <div className="title-accent-bar"></div>
@@ -55,36 +60,42 @@ export default function ArtistSetup(){
         <div className="form-layout">
           <div className="field-group">
             <label className="field-label">Artist Name</label>
-            <input 
-              className="field-input" 
-              placeholder="The Longhorns" 
-              value={name} 
-              onChange={e=>setName(e.target.value)} 
+            <input
+              className="field-input"
+              placeholder="The Longhorns"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
 
           <div className="field-group">
             <label className="field-label">Genre</label>
-            <input 
-              className="field-input" 
-              placeholder="Country" 
-              value={genre} 
-              onChange={e=>setGenre(e.target.value)} 
+            <input
+              className="field-input"
+              placeholder="Country"
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
             />
           </div>
 
           <div className="field-group field-wide">
-            <label className="field-label">Similar Artists <span className="label-optional">(optional)</span></label>
-            <input 
-              className="field-input" 
-              placeholder="Taylor Swift, Bruno Mars, Beyonce" 
-              value={similar} 
-              onChange={e=>setSimilar(e.target.value)} 
+            <label className="field-label">
+              Similar Artists <span className="label-optional">(optional)</span>
+            </label>
+            <input
+              className="field-input"
+              placeholder="Taylor Swift, Bruno Mars, Beyonce"
+              value={similar}
+              onChange={(e) => setSimilar(e.target.value)}
             />
           </div>
         </div>
 
-        <button className="btn" disabled={localLoading || !name || !genre} onClick={onRun}>
+        <button 
+          className="btn" 
+          disabled={localLoading || !name || !genre} 
+          onClick={onRun}
+        >
           {localLoading ? 'Analyzing…' : 'Run Analysis'}
         </button>
       </div>
@@ -93,5 +104,5 @@ export default function ArtistSetup(){
       <div className="floating-note floating-note-1">♪</div>
       <div className="floating-note floating-note-2">♫</div>
     </div>
-  )
+  );
 }
