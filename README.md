@@ -8,6 +8,9 @@
 
 Touring is often a financial gamble for young and emerging artists. **Sonar** transforms this "guesswork" into a data science problem. By analyzing public search behavior via Google Trends (SerpAPI) and cross-referencing it with venue data, the platform identifies "clusters of interest," or cities where fans are searching for the artist's music or genre.
 
+<img width="1191" height="717" alt="Sonar Dashboard" src="https://github.com/user-attachments/assets/3884d30d-0f73-446b-aa02-6f1d0f3dc85b" />
+
+
 ### The Problem
 * **Financial Risk:** Artists lose money on tour stops with low attendance.
 * **Information Gap:** Lack of visibility into geographic search trends and fan density.
