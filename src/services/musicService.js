@@ -1,4 +1,4 @@
-const API_KEY = '';
+const API_KEY = import.meta.env.VITE_MUSIC_API_KEY;
 const BASE_URL = 'https://ws.audioscrobbler.com/2.0/';
 
 export async function searchTracks(query) {

@@ -1,4 +1,4 @@
-const API_KEY = "";
+const API_KEY = import.meta.env.VITE_SERP_API_KEY;
 
 export async function searchVenues(cityName, stateName, lat, lng) {
   if (lat === undefined || lng === undefined || lat === null || lng === null) {

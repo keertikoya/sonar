@@ -1,6 +1,6 @@
 import cityData from '../data/cities.json';
 
-const API_KEY = "";
+const API_KEY = import.meta.env.VITE_SERP_API_KEY;
 
 async function resolveTopicId(query) {
   const params = new URLSearchParams({
